@@ -38,14 +38,19 @@ namespace VirtoCommerce.Storefront.Controllers.Omninet
 
             if (string.IsNullOrWhiteSpace(accessToken))
             {
-                return BadRequest();
+                return BadRequest("Token is not sent");
             }
 
             var claims = ValidateAndGetClaims(accessToken);
 
             var login = claims.FirstOrDefault(x => x.Type == "sub")?.Value;
-            
-            var user = !string.IsNullOrWhiteSpace(login) ? await _signInManager.UserManager.FindByNameAsync(login) : null;
+
+            if (string.IsNullOrWhiteSpace(login))
+            {
+                return BadRequest("Login is null or empty");
+            }
+
+            var user = await _signInManager.UserManager.FindByNameAsync(login);
 
             if (user == null)
             {

@@ -551,5 +551,6 @@ namespace VirtoCommerce.Storefront.Controllers.Api
             return new UpdatePhoneNumberResult { Succeeded = result.Succeeded };
 
         }
+
     }
 }
