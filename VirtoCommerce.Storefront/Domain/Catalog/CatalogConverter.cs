@@ -432,10 +432,9 @@ namespace VirtoCommerce.Storefront.Domain
                 result.Description = (result.Descriptions.FirstOrDefault(x => x.ReviewType.EqualsInvariant("FullReview")) ?? result.Descriptions.FirstOrDefault())?.Value;
             }
 
-            result.CanBeOrderedSeparately = bool.Parse(
-                result.Properties?.FirstOrDefault(x => x.Name == "Can_be_ordered_separately").Value);
-
-
+            result.CanBeOrderedSeparately = Convert.ToBoolean(
+                result.Properties?.FirstOrDefault(x => x.Name == "Can_be_ordered_separately")?.Value);
+            
             return result;
         }
 
