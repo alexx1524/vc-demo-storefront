@@ -325,6 +325,8 @@ namespace VirtoCommerce.Storefront.Model.Catalog
         /// </summary>
         public PaymentPlan PaymentPlan { get; set; }
 
+        public bool CanBeOrderedSeparately { get; set; }
+
         /// <summary>
         /// Apply prices to product
         /// </summary>

@@ -9,7 +9,7 @@ namespace VirtoCommerce.Storefront.Model.Services
     /// </summary>
     public interface ICatalogService
     {
-        Task<Product[]> GetProductsAsync(string[] ids, ItemResponseGroup responseGroup);
+        Task<Product[]> GetProductsAsync(string[] ids, ItemResponseGroup responseGroup, bool loadDependencies = true);
 
         Task<Category[]> GetCategoriesAsync(string[] ids, CategoryResponseGroup responseGroup);
         Category[] GetCategories(string[] ids, CategoryResponseGroup responseGroup);

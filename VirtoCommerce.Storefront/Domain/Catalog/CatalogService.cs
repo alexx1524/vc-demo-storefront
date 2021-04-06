@@ -66,7 +66,8 @@ namespace VirtoCommerce.Storefront.Domain
 
         #region ICatalogSearchService Members
 
-        public virtual async Task<Product[]> GetProductsAsync(string[] ids, ItemResponseGroup responseGroup = ItemResponseGroup.None)
+        public virtual async Task<Product[]> GetProductsAsync(string[] ids,
+            ItemResponseGroup responseGroup = ItemResponseGroup.None, bool loadDependencies = true)
         {
             Product[] result;
 
@@ -86,8 +87,11 @@ namespace VirtoCommerce.Storefront.Domain
                 result = await GetProductsAsync(ids, responseGroup, workContext);
 
                 var productsWithVariations = result.Concat(result.SelectMany(p => p.Variations)).ToList();
-
-                await LoadProductDependencies(productsWithVariations, responseGroup, workContext);
+                if (loadDependencies)
+                {
+                    await LoadProductDependencies(productsWithVariations, responseGroup, workContext);
+                }
+                
                 EstablishLazyDependenciesForProducts(result);
             }
 

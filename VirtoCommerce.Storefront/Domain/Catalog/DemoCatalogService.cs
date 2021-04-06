@@ -56,9 +56,46 @@ namespace VirtoCommerce.Storefront.Domain.Catalog
                     var productParts = await GetProductPartsAsync(product.Id);
                     product.Parts = productParts;
                 }
+
+                foreach (var product in products.Where(product => product.ProductType != ProductTypes.Configurable && product.ProductType != null))
+                {
+                    var configurableProducts = await GetConfigurableProductsAsync(product.Id);
+                    product.ConfigurableProducts = configurableProducts;
+                }
             }
 
             await base.LoadProductDependencies(products, responseGroup, workContext);
+        }
+
+        public async Task<Product[]> GetConfigurableProductsAsync(string productId)
+        {
+            var cacheKey = CacheKey.With(GetType(), nameof(GetConfigurableProductsAsync), productId);
+
+            var searchResult = await _memoryCache.GetOrCreateExclusiveAsync(cacheKey, async (cacheEntry) =>
+            {
+                cacheEntry.AddExpirationToken(CatalogCacheRegion.CreateChangeToken());
+                cacheEntry.AddExpirationToken(_apiChangesWatcher.CreateChangeToken());
+
+                return await _demoCatalogApi.SearchAsync(new DemoProductPartSearchCriteria
+                {
+                    ObjectIds = new [] { productId },
+                    Skip = 0,
+                    Take = int.MaxValue
+                });
+            });
+
+            var configurableProductIds = searchResult.Results.Select(x => x.ConfiguredProductId).ToArray();
+
+            Product[] result = null;
+
+            if (configurableProductIds.Any())
+            {
+                // We need to prevent the loading of dependencies for the product
+                // so we pass the value of the loadDependencies parameter to false (prevent recursion)
+                result = await GetProductsAsync(configurableProductIds, ItemResponseGroup.ItemProperties, false);
+            }
+
+            return result;
         }
 
         public async Task<ProductPart[]> GetProductPartsAsync(string productId)
