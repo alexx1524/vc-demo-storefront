@@ -22,7 +22,10 @@ namespace VirtoCommerce.Storefront.Controllers.Omninet
         private readonly IConfiguration _configuration;
         private readonly SignInManager<User> _signInManager;
 
-        public AuthorizationController(IWorkContextAccessor workContextAccessor, IStorefrontUrlBuilder urlBuilder, IConfiguration configuration, SignInManager<User> signInManager) :
+        public AuthorizationController(IWorkContextAccessor workContextAccessor,
+            IStorefrontUrlBuilder urlBuilder,
+            IConfiguration configuration,
+            SignInManager<User> signInManager) :
             base(workContextAccessor, urlBuilder)
         {
             _configuration = configuration;
@@ -33,8 +36,8 @@ namespace VirtoCommerce.Storefront.Controllers.Omninet
         [AllowAnonymous]
         public async Task<ActionResult> Login()
         {
-            var accessToken = HttpContext.Request.Form[
-                _configuration.GetSection("ExternalAuthorizationOptions")["TokenFieldName"]];
+            var accessToken = HttpContext.Request
+                .Form[_configuration.GetSection("ExternalAuthorizationOptions")["TokenFieldName"]];
 
             if (string.IsNullOrWhiteSpace(accessToken))
             {
