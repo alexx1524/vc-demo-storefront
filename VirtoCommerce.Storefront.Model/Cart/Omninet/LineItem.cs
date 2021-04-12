@@ -4,6 +4,6 @@ namespace VirtoCommerce.Storefront.Model.Cart
 {
     public partial class LineItem
     {
-        public string LocalizedName() => Product?.Properties?.GetDisplayName() ?? Name;
+        public string LocalizedName => Product?.Properties?.GetDisplayName() ?? Name;
     }
 }

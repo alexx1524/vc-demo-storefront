@@ -5,6 +5,6 @@ namespace VirtoCommerce.Storefront.Model.Order
 {
     public partial class LineItem
     {
-        public string LocalizedName() => Product?.Properties?.GetDisplayName() ?? Name;
+        public string LocalizedName => Product?.Properties?.GetDisplayName() ?? Name;
     }
 }
