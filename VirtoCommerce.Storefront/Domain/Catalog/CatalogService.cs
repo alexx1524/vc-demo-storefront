@@ -84,6 +84,11 @@ namespace VirtoCommerce.Storefront.Domain
                     responseGroup = workContext.CurrentProductResponseGroup;
                 }
 
+                if (!responseGroup.HasFlag(ItemResponseGroup.ItemProperties))
+                {
+                    responseGroup |= ItemResponseGroup.ItemProperties;
+                }
+
                 result = await GetProductsAsync(ids, responseGroup, workContext);
 
                 var productsWithVariations = result.Concat(result.SelectMany(p => p.Variations)).ToList();
@@ -280,6 +285,7 @@ namespace VirtoCommerce.Storefront.Domain
                 criteria = criteria.Clone() as ProductSearchCriteria;
 
                 var searchCriteria = criteria.ToProductSearchCriteriaDto(workContext);
+
                 return await _searchApi.SearchProductsAsync(searchCriteria);
             });
         }
