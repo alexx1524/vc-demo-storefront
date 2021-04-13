@@ -117,6 +117,7 @@ namespace VirtoCommerce.Storefront.Controllers
         {
             var skus = bulkOrderItems.Select(i => i.Sku).ToList();
             var filter = $"code:{string.Join(",", skus)}";
+
             //TODO: Need to replace from indexed search to special method GetProductByCodes when it will be presents in the catalog API
             var productSearchResult = await _catalogService.SearchProductsAsync(new ProductSearchCriteria
             {
@@ -124,9 +125,12 @@ namespace VirtoCommerce.Storefront.Controllers
                 ResponseGroup = ItemResponseGroup.Variations | ItemResponseGroup.ItemWithPrices | ItemResponseGroup.Inventory | ItemResponseGroup.ItemProperties,
                 Terms = filter.ToTerms().ToList()
             });
+
             //Because product stores in index all codes of it variations and the catalog  search returns only main product we need to this concat with variations
             var foundSkusProductsWithVariationsMap = productSearchResult.Products.Concat(productSearchResult.Products.SelectMany(x => x.Variations))
+                                                                        .Where(x => x.CanBeOrderedSeparately)
                                                                         .ToDictionary(x => x.Sku, StringComparer.OrdinalIgnoreCase);
+            
             var addedSkus = new List<string>();
             foreach (var bulkOrderItem in bulkOrderItems)
             {
