@@ -93,6 +93,7 @@ namespace VirtoCommerce.Storefront.Controllers
             {
                 criteria.PageNumber = pageNumber;
                 criteria.PageSize = pageSize;
+                criteria.ResponseGroup = ItemResponseGroup.Default | ItemResponseGroup.ItemProperties;
                 if (string.IsNullOrEmpty(criteria.SortBy) && !sortInfos.IsNullOrEmpty())
                 {
                     criteria.SortBy = SortInfo.ToString(sortInfos);
