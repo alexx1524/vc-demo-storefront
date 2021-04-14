@@ -28,7 +28,7 @@ namespace VirtoCommerce.Storefront.Domain
             workContext.CurrentProductSearchCriteria = productSearchcriteria;
             //Initialize product response group.
             //TODO: Need to find possibility to set this response group in theme
-            workContext.CurrentProductResponseGroup = EnumUtility.SafeParse(workContext.QueryString.Get("resp_group"), ItemResponseGroup.ItemMedium | ItemResponseGroup.ItemWithPrices | ItemResponseGroup.ItemWithVendor | ItemResponseGroup.ItemAssociations);
+            workContext.CurrentProductResponseGroup = EnumUtility.SafeParse(workContext.QueryString.Get("resp_group"), ItemResponseGroup.ItemMedium | ItemResponseGroup.ItemWithPrices | ItemResponseGroup.ItemWithVendor | ItemResponseGroup.ItemAssociations | ItemResponseGroup.ItemProperties);
 
             //This line make delay categories loading initialization (categories can be evaluated on view rendering time)
             workContext.Categories = new MutablePagedList<Category>((pageNumber, pageSize, sortInfos, @params) =>
@@ -83,6 +83,7 @@ namespace VirtoCommerce.Storefront.Domain
                 var criteria = workContext.CurrentProductSearchCriteria.Clone() as ProductSearchCriteria;
                 criteria.PageNumber = pageNumber;
                 criteria.PageSize = pageSize;
+                criteria.ResponseGroup = workContext.CurrentProductResponseGroup;
                 if (string.IsNullOrEmpty(criteria.SortBy) && !sortInfos.IsNullOrEmpty())
                 {
                     criteria.SortBy = SortInfo.ToString(sortInfos);
